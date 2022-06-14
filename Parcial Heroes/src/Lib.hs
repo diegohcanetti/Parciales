@@ -42,6 +42,10 @@ pasarALaHistoria heroe
     | reconocimiento heroe >= 500 = nuevoEpitetoYArtefacto "El magnífico" lanzaDelOlimpo heroe
     | reconocimiento heroe >  100 = nuevoEpitetoYArtefacto "Hoplita" xiphos heroe
     | otherwise                   = heroe
+    
+cambiarEpitetoPor nuevoEpiteto = mapEpiteto (const nuevoEpiteto)
+
+aniadirArtefacto nuevoArtefacto = mapArtefacto (nuevoArtefacto :)
 
 lanzaDelOlimpo :: Artefacto
 lanzaDelOlimpo =  Artefacto "Lanza del Olimpo" 100
