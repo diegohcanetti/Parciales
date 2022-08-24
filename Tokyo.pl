@@ -58,11 +58,62 @@ otraRonda(Disciplina,Ronda) :-
     evento(Disciplina, OtraRonda, _),
     Ronda \= OtraRonda.
 
-%% 7
-
-pais(Pais) :-
-    atleta(_, _, Pais).
+%%% 7
 noEsElFuerte(Pais, Disciplina) :-
     pais(Pais),
     disciplina(Disciplina, _),
+    noCompitio(Pais, Disciplina).
+  
+  % noCompitio se fija si:
+  %    * no participó
+  %    * se volvió en ronda inicial
+  
+  noCompitio(Pais, Disciplina) :-
+    forall(paisOAtletaDelPais(AtletaOPais, Pais), not(evento(Disciplina, _, AtletaOPais))).
+  
+  noCompitio(Pais, Disciplina) :-
+    not(paisEstuvoEnRondaNoInicial(Pais, Disciplina)).
+  
+  paisEstuvoEnRondaNoInicial(Pais, Disciplina) :-
+    evento(Disciplina, Ronda, Participante),
+    paisOAtletaDelPais(Participante, Pais),
+    disciplina(Disciplina, Tipo),
+    not(rondaInicialPara(Tipo, Ronda)).
+  
+  % que el país NO esté en una ronda que NO es inicial
+  % todas las rondas de ese país tienen que ser la inicial
+  rondaInicialPara(equipo, faseDeGrupos).
+  rondaInicialPara(individual, ronda1).
+  
+  
+  %%% 8
+  medallasEfectivas(CuentaFinal, Pais) :-
+    pais(Pais),
+    findall(Puntos, puntosPorMedallaParaPais(Pais, Puntos), ListaDePuntos),
+    sumlist(ListaDePuntos, CuentaFinal).
+  
+  puntosPorMedallaParaPais(Pais, Puntos) :-
+    medallasDelPais(Medalla, _, Pais),
+    puntosPorMedalla(Medalla, Puntos).
+  
+  puntosPorMedalla(oro, 3).
+  puntosPorMedalla(plata, 2).
+  puntosPorMedalla(bronce, 1).
+  
+  
+  %%% 9
+  laEspecialidad(Atleta) :-
+    atleta(Atleta, _, _),
+    not(vinoAPasear(Atleta)),
+    forall(participoEn(Disciplina, _, Atleta), salio1o2(Atleta, Disciplina)).
+  
+  salio1o2(Atleta, Disciplina) :-
+    medalla(Medalla, Disciplina, AtletaOPais),
+    paisOAtletaDelPais(Atleta, AtletaOPais),
+    medallaDeOroOPlata(Medalla).
+  
+  medallaDeOroOPlata(oro).
+  medallaDeOroOPlata(plata).
+
+%% Consignas https://docs.google.com/document/d/1CXilm0efIbrbOttX4GZsOcfUrkGjCe2oKWzUHEMrP-s/edit
     
